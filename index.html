@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SNAKE - Modern Arcade Adventure</title>
+  <meta name="description" content="Play the modern Snake Game with Classic, Desert, Train, and Space maps, power-ups, XP levels, skins, and rich arcade progression.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+
+    <!-- Top Navigation Header -->
+    <header id="app-header" class="app-header">
+      <div class="brand-logo" id="header-logo">
+        <span class="brand-icon">🐍</span>
+        <span class="brand-text">SNAKE</span>
+      </div>
+
+      <!-- Currency & Level Bar -->
+      <div class="header-currency-bar" id="header-currency-bar">
+        <div class="currency-chip level-chip" id="chip-level" title="Your Current Level">
+          <span class="currency-icon">⭐</span>
+          <span class="currency-text">Lv.<strong id="top-level">1</strong></span>
+        </div>
+        <div class="currency-chip coins-chip" id="chip-coins" title="Coins">
+          <span class="currency-icon">🪙</span>
+          <span class="currency-text" id="top-coins">0</span>
+        </div>
+        <div class="currency-chip gems-chip" id="chip-gems" title="Gems">
+          <span class="currency-icon">💎</span>
+          <span class="currency-text" id="top-gems">0</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="theme-toggle-btn" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <span class="theme-icon" id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: MAIN MENU -->
+    <section id="screen-menu" class="screen active">
+      <div class="menu-content">
+        <div class="game-hero">
+          <div class="logo-wrapper">
+            <h1 class="game-title">SNAKE</h1>
+            <span class="title-badge">ARCADE ADVENTURE</span>
+          </div>
+          <div class="decorative-animation-container">
+            <canvas id="menu-anim-canvas" width="280" height="90"></canvas>
+          </div>
+        </div>
+
+        <!-- Level XP Bar in Menu -->
+        <div class="menu-xp-card" id="menu-xp-card">
+          <div class="xp-card-header">
+            <span class="xp-level-title">LEVEL <strong id="menu-level-num">1</strong></span>
+            <span class="xp-fraction" id="menu-xp-text">0 / 100 XP</span>
+          </div>
+          <div class="xp-bar-track">
+            <div class="xp-bar-fill" id="menu-xp-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- High Score Showcase -->
+        <div class="menu-stats-card">
+          <div class="stat-pill">
+            <span class="stat-label">🏆 Classic Best</span>
+            <span class="stat-value" id="menu-classic-high">0</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-pill">
+            <span class="stat-label">♾️ Endless Best</span>
+            <span class="stat-value" id="menu-endless-high">0</span>
+          </div>
+        </div>
+
+        <!-- Active Map & Food Pill -->
+        <div class="menu-pills-row">
+          <div class="menu-badge-pill" id="menu-map-pill" title="Current Selected Map">
+            <span class="badge-pill-label">Map:</span>
+            <span class="badge-pill-icon" id="menu-map-icon">🕹️</span>
+            <span class="badge-pill-value" id="menu-map-name">Classic</span>
+          </div>
+          <div class="menu-badge-pill" id="menu-food-pill" title="Current Selected Food">
+            <span class="badge-pill-label">Food:</span>
+            <span class="badge-pill-icon" id="menu-food-icon">🍎</span>
+            <span class="badge-pill-value" id="menu-food-name">Apple</span>
+          </div>
+        </div>
+
+        <!-- Main Navigation Buttons Grid -->
+        <div class="menu-buttons">
+          <button id="btn-main-play" class="btn btn-primary btn-lg pulse-hover">
+            <span class="btn-icon">▶</span>
+            <span class="btn-text">PLAY GAME</span>
+          </button>
+          
+          <div class="menu-btn-row">
+            <button id="btn-main-maps" class="btn btn-secondary btn-md">
+              <span class="btn-icon">🗺️</span>
+              <span class="btn-text">MAPS</span>
+            </button>
+            <button id="btn-main-shop" class="btn btn-secondary btn-md">
+              <span class="btn-icon">🛒</span>
+              <span class="btn-text">SHOP</span>
+            </button>
+          </div>
+
+          <div class="menu-btn-row">
+            <button id="btn-main-profile" class="btn btn-secondary btn-md">
+              <span class="btn-icon">👤</span>
+              <span class="btn-text">PROFILE</span>
+            </button>
+            <button id="btn-main-customize" class="btn btn-secondary btn-md">
+              <span class="btn-icon">🍎</span>
+              <span class="btn-text">FRUITS</span>
+            </button>
+          </div>
+
+          <button id="btn-main-settings" class="btn btn-secondary btn-md">
+            <span class="btn-icon">⚙️</span>
+            <span class="btn-text">SETTINGS</span>
+          </button>
+        </div>
+
+        <footer class="menu-footer">
+          <span>Earn XP, Coins & Gems • All Maps are 100% Free!</span>
+        </footer>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: MODE SELECTION -->
+    <section id="screen-mode-select" class="screen">
+      <div class="screen-header">
+        <button id="btn-mode-back" class="icon-btn back-btn" aria-label="Back">←</button>
+        <h2>CHOOSE MODE</h2>
+        <div style="width: 40px;"></div>
+      </div>
+      <div class="mode-cards-grid">
+        <div class="mode-card" id="card-mode-classic">
+          <div class="mode-card-header">
+            <div class="mode-badge classic-badge">TRADITIONAL</div>
+            <div class="mode-icon-circle">🧱</div>
+          </div>
+          <h3 class="mode-card-title">CLASSIC MODE</h3>
+          <p class="mode-card-desc">
+            Arcade survival. Eat food, grow, dodge obstacles and walls. Hitting walls or obstacles causes Game Over!
+          </p>
+          <div class="mode-meta">
+            <div class="mode-meta-item">
+              <span class="meta-label">High Score</span>
+              <span class="meta-value" id="mode-classic-high">0</span>
+            </div>
+            <div class="mode-meta-item">
+              <span class="meta-label">Walls</span>
+              <span class="meta-value danger-text">Deadly</span>
+            </div>
+          </div>
+          <button id="btn-start-classic" class="btn btn-primary btn-block">
+            <span>PLAY CLASSIC</span>
+          </button>
+        </div>
+
+        <div class="mode-card" id="card-mode-endless">
+          <div class="mode-card-header">
+            <div class="mode-badge endless-badge">PORTAL LOOP</div>
+            <div class="mode-icon-circle">🌀</div>
+          </div>
+          <h3 class="mode-card-title">ENDLESS MODE</h3>
+          <p class="mode-card-desc">
+            Relaxed exploration. Walls wrap around like portals. Continue growing and exploring until you choose to quit!
+          </p>
+          <div class="mode-meta">
+            <div class="mode-meta-item">
+              <span class="meta-label">High Score</span>
+              <span class="meta-value" id="mode-endless-high">0</span>
+            </div>
+            <div class="mode-meta-item">
+              <span class="meta-label">Walls</span>
+              <span class="meta-value success-text">Wrap Around</span>
+            </div>
+          </div>
+          <button id="btn-start-endless" class="btn btn-primary btn-block">
+            <span>PLAY ENDLESS</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: MAP SELECTOR (ALL 100% FREE) -->
+    <section id="screen-maps" class="screen">
+      <div class="screen-header">
+        <button id="btn-maps-back" class="icon-btn back-btn" aria-label="Back">←</button>
+        <div>
+          <h2>SELECT MAP</h2>
+          <p class="screen-subtitle">All 4 worlds are 100% Free to explore!</p>
+        </div>
+        <div style="width: 40px;"></div>
+      </div>
+
+      <div class="maps-grid" id="maps-grid">
+        <!-- Map 1: Classic -->
+        <div class="map-card" data-map="classic" id="map-card-classic">
+          <div class="map-preview map-preview-classic">
+            <span class="map-preview-icon">🕹️</span>
+            <span class="map-free-tag">FREE</span>
+          </div>
+          <div class="map-card-body">
+            <div class="map-card-title-row">
+              <h3>Classic Arcade</h3>
+              <span class="map-selected-badge">✓ Active</span>
+            </div>
+            <p class="map-desc">Traditional retro arcade grid. Pure skill, clean lines, and no environmental obstacles.</p>
+            <div class="map-features">
+              <span class="feat-tag">Obstacles: None</span>
+              <span class="feat-tag">Standard Speed</span>
+            </div>
+            <button class="btn btn-secondary btn-block btn-select-map" data-map="classic">Select Map</button>
+          </div>
+        </div>
+
+        <!-- Map 2: Desert -->
+        <div class="map-card" data-map="desert" id="map-card-desert">
+          <div class="map-preview map-preview-desert">
+            <span class="map-preview-icon">🏜️</span>
+            <span class="map-free-tag">FREE</span>
+          </div>
+          <div class="map-card-body">
+            <div class="map-card-title-row">
+              <h3>Desert Dunes</h3>
+              <span class="map-selected-badge">✓ Active</span>
+            </div>
+            <p class="map-desc">Warm shifting sand dunes. Beware of hazardous 🌵 Cacti that sprout and relocate dynamically!</p>
+            <div class="map-features">
+              <span class="feat-tag">Obstacle: 🌵 Cactus</span>
+              <span class="feat-tag">Sand Atmosphere</span>
+            </div>
+            <button class="btn btn-secondary btn-block btn-select-map" data-map="desert">Select Map</button>
+          </div>
+        </div>
+
+        <!-- Map 3: Train -->
+        <div class="map-card" data-map="train" id="map-card-train">
+          <div class="map-preview map-preview-train">
+            <span class="map-preview-icon">🚆</span>
+            <span class="map-free-tag">FREE</span>
+          </div>
+          <div class="map-card-body">
+            <div class="map-card-title-row">
+              <h3>Train Railway</h3>
+              <span class="map-selected-badge">✓ Active</span>
+            </div>
+            <p class="map-desc">Railway tracks with crossing train carriages. Collect ⚡ Speed Boosters for turbo overdrive!</p>
+            <div class="map-features">
+              <span class="feat-tag">Obstacle: 🚆 Trains</span>
+              <span class="feat-tag">Booster: ⚡ Speed</span>
+            </div>
+            <button class="btn btn-secondary btn-block btn-select-map" data-map="train">Select Map</button>
+          </div>
+        </div>
+
+        <!-- Map 4: Space -->
+        <div class="map-card" data-map="space" id="map-card-space">
+          <div class="map-preview map-preview-space">
+            <span class="map-preview-icon">🚀</span>
+            <span class="map-free-tag">FREE</span>
+          </div>
+          <div class="map-card-body">
+            <div class="map-card-title-row">
+              <h3>Space Cosmic</h3>
+              <span class="map-selected-badge">✓ Active</span>
+            </div>
+            <p class="map-desc">Deep cosmic nebula with celestial planets. Triggers the 🌀 Time Stop Quick-Reaction Portal event!</p>
+            <div class="map-features">
+              <span class="feat-tag">Obstacle: 🪐 Planets</span>
+              <span class="feat-tag">Event: 🌀 Time Stop</span>
+            </div>
+            <button class="btn btn-secondary btn-block btn-select-map" data-map="space">Select Map</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: POWER-UP SHOP -->
+    <section id="screen-shop" class="screen">
+      <div class="screen-header">
+        <button id="btn-shop-back" class="icon-btn back-btn" aria-label="Back">←</button>
+        <div>
+          <h2>POWER-UP SHOP</h2>
+          <p class="screen-subtitle">Spend earned Coins & Gems on game-changing boosters</p>
+        </div>
+        <div style="width: 40px;"></div>
+      </div>
+
+      <!-- Shop Balance Banner -->
+      <div class="shop-balance-banner">
+        <div class="shop-bal-item">
+          <span>Your Coins:</span>
+          <strong>🪙 <span id="shop-coins-val">0</span></strong>
+        </div>
+        <div class="shop-bal-divider"></div>
+        <div class="shop-bal-item">
+          <span>Your Gems:</span>
+          <strong>💎 <span id="shop-gems-val">0</span></strong>
+        </div>
+      </div>
+
+      <div class="shop-sections-grid">
+        <!-- Coin Power-Ups -->
+        <div class="shop-category-box">
+          <div class="category-header">
+            <h3>🪙 COIN POWER-UPS</h3>
+            <span class="category-badge">Earn 10 coins / 10 fruits</span>
+          </div>
+
+          <div class="shop-item-card" id="shop-card-magnet">
+            <div class="shop-item-icon-box magnet-icon-box">🧲</div>
+            <div class="shop-item-details">
+              <h4>Magnet</h4>
+              <p>Nearby food gets drawn toward the snake for 10 seconds.</p>
+              <div class="shop-item-inventory">Owned: <strong id="inv-magnet">0</strong></div>
+            </div>
+            <button class="btn btn-primary btn-buy" id="btn-buy-magnet">
+              <span>🪙 10</span>
+              <small>BUY</small>
+            </button>
+          </div>
+
+          <div class="shop-item-card" id="shop-card-shield">
+            <div class="shop-item-icon-box shield-icon-box">🛡️</div>
+            <div class="shop-item-details">
+              <h4>Shield</h4>
+              <p>Protects the snake from 1 lethal collision (wall, self, or obstacle).</p>
+              <div class="shop-item-inventory">Owned: <strong id="inv-shield">0</strong></div>
+            </div>
+            <button class="btn btn-primary btn-buy" id="btn-buy-shield">
+              <span>🪙 10</span>
+              <small>BUY</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- Gem Power-Ups -->
+        <div class="shop-category-box">
+          <div class="category-header">
+            <h3>💎 GEM POWER-UPS</h3>
+            <span class="category-badge gem-cat-badge">Earn 10 gems / 20 fruits</span>
+          </div>
+
+          <div class="shop-item-card" id="shop-card-freeze">
+            <div class="shop-item-icon-box freeze-icon-box">❄️</div>
+            <div class="shop-item-details">
+              <h4>Freeze</h4>
+              <p>Slows down game time temporarily so you can navigate safely.</p>
+              <div class="shop-item-inventory">Owned: <strong id="inv-freeze">0</strong></div>
+            </div>
+            <button class="btn btn-primary btn-buy btn-gem-buy" id="btn-buy-freeze">
+              <span>💎 10</span>
+              <small>BUY</small>
+            </button>
+          </div>
+
+          <div class="shop-item-card" id="shop-card-cut">
+            <div class="shop-item-icon-box cut-icon-box">✂️</div>
+            <div class="shop-item-details">
+              <h4>Cut</h4>
+              <p>Cuts your body length in half when too long! Does NOT reduce score.</p>
+              <div class="shop-item-inventory">Owned: <strong id="inv-cut">0</strong></div>
+            </div>
+            <button class="btn btn-primary btn-buy btn-gem-buy" id="btn-buy-cut">
+              <span>💎 10</span>
+              <small>BUY</small>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: PROGRESSION & PROFILE -->
+    <section id="screen-profile" class="screen">
+      <div class="screen-header">
+        <button id="btn-profile-back" class="icon-btn back-btn" aria-label="Back">←</button>
+        <div>
+          <h2>PLAYER PROFILE</h2>
+          <p class="screen-subtitle">Your adventure level, stats & snake skins</p>
+        </div>
+        <div style="width: 40px;"></div>
+      </div>
+
+      <div class="profile-content">
+        <!-- Level & XP Hero -->
+        <div class="profile-level-hero">
+          <div class="profile-level-badge">
+            <span class="badge-star">⭐</span>
+            <span class="badge-level-txt" id="profile-level-num">LEVEL 1</span>
+          </div>
+          <div class="profile-xp-details">
+            <div class="xp-row">
+              <span>Progression XP:</span>
+              <strong id="profile-xp-counter">0 / 100 XP</strong>
+            </div>
+            <div class="xp-bar-track lg">
+              <div class="xp-bar-fill" id="profile-xp-fill" style="width: 0%;"></div>
+            </div>
+            <small>Earn 10 XP for every fruit eaten (+10 Coins bonus per Level!)</small>
+          </div>
+        </div>
+
+        <!-- Lifetime Stats Grid -->
+        <div class="profile-stats-grid">
+          <div class="profile-stat-box">
+            <span class="p-stat-icon">🪙</span>
+            <span class="p-stat-val" id="profile-stat-coins">0</span>
+            <span class="p-stat-lbl">Coins</span>
+          </div>
+          <div class="profile-stat-box">
+            <span class="p-stat-icon">💎</span>
+            <span class="p-stat-val" id="profile-stat-gems">0</span>
+            <span class="p-stat-lbl">Gems</span>
+          </div>
+          <div class="profile-stat-box">
+            <span class="p-stat-icon">🍎</span>
+            <span class="p-stat-val" id="profile-stat-fruits">0</span>
+            <span class="p-stat-lbl">Fruits Eaten</span>
+          </div>
+          <div class="profile-stat-box">
+            <span class="p-stat-icon">🏆</span>
+            <span class="p-stat-val" id="profile-stat-best">0</span>
+            <span class="p-stat-lbl">Best Score</span>
+          </div>
+        </div>
+
+        <!-- Snake Skins Selection -->
+        <div class="profile-section">
+          <h3>🐍 SNAKE SKINS</h3>
+          <div class="skins-grid" id="skins-grid">
+            <div class="skin-card selected" data-skin="classic">
+              <div class="skin-preview skin-preview-classic">
+                <span class="skin-dot head"></span>
+                <span class="skin-dot"></span>
+                <span class="skin-dot"></span>
+              </div>
+              <span class="skin-name">Classic Arcade</span>
+              <span class="skin-status">✓ Selected</span>
+            </div>
+            <div class="skin-card" data-skin="desert">
+              <div class="skin-preview skin-preview-desert">
+                <span class="skin-dot head"></span>
+                <span class="skin-dot"></span>
+                <span class="skin-dot"></span>
+              </div>
+              <span class="skin-name">Desert Viper</span>
+              <span class="skin-status">Select</span>
+            </div>
+            <div class="skin-card" data-skin="train">
+              <div class="skin-preview skin-preview-train">
+                <span class="skin-dot head"></span>
+                <span class="skin-dot"></span>
+                <span class="skin-dot"></span>
+              </div>
+              <span class="skin-name">Cyber Train</span>
+              <span class="skin-status">Select</span>
+            </div>
+            <div class="skin-card" data-skin="space">
+              <div class="skin-preview skin-preview-space">
+                <span class="skin-dot head"></span>
+                <span class="skin-dot"></span>
+                <span class="skin-dot"></span>
+              </div>
+              <span class="skin-name">Cosmic Nebula</span>
+              <span class="skin-status">Select</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: GAME SCREEN -->
+    <section id="screen-game" class="screen">
+      <!-- Top In-Game HUD -->
+      <div class="game-hud">
+        <div class="hud-left">
+          <span class="hud-map-pill" id="hud-map-pill">🕹️ Classic</span>
+          <span class="hud-mode-pill" id="hud-mode-pill">CLASSIC</span>
+        </div>
+        <div class="hud-center">
+          <div class="hud-score-box">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-score-value" id="hud-score">0</span>
+          </div>
+          <div class="hud-score-box">
+            <span class="hud-label">BEST</span>
+            <span class="hud-best-value" id="hud-high-score">0</span>
+          </div>
+          <div class="hud-score-box" id="hud-length-container">
+            <span class="hud-label">LENGTH</span>
+            <span class="hud-length-value" id="hud-length">3</span>
+          </div>
+        </div>
+        <div class="hud-right">
+          <button id="btn-game-pause" class="btn btn-sm btn-hud" title="Pause Game (P / Esc)">
+            <span class="btn-icon">⏸</span>
+            <span class="btn-text">PAUSE</span>
+          </button>
+          <button id="btn-game-quit" class="btn btn-sm btn-hud btn-hud-quit" title="Quit Endless Run">
+            <span class="btn-icon">🏁</span>
+            <span class="btn-text">QUIT</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- In-Game Progression Mini-Bar -->
+      <div class="game-xp-hud-bar">
+        <div class="game-xp-info">
+          <span>⭐ LEVEL <strong id="hud-level-num">1</strong></span>
+          <span id="hud-xp-text">XP: 0 / 100</span>
+        </div>
+        <div class="xp-bar-track sm">
+          <div class="xp-bar-fill" id="hud-xp-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Active Status Indicators (Shield, Magnet, Freeze, Booster) -->
+      <div class="active-status-bar" id="active-status-bar">
+        <span class="status-chip status-shield" id="status-shield">🛡️ Shield Active</span>
+        <span class="status-chip status-magnet" id="status-magnet">🧲 Magnet <b id="timer-magnet">10s</b></span>
+        <span class="status-chip status-freeze" id="status-freeze">❄️ Freeze <b id="timer-freeze">8s</b></span>
+        <span class="status-chip status-boost" id="status-boost">⚡ Boost <b id="timer-boost">5s</b></span>
+      </div>
+
+      <!-- Centered Canvas Game Board Container -->
+      <div class="game-board-container" id="game-board-container">
+        <canvas id="game-canvas" width="440" height="440"></canvas>
+        <div id="board-toast" class="board-toast"></div>
+      </div>
+
+      <!-- In-Game Power-Up Hotbar -->
+      <div class="game-powerup-bar">
+        <button class="powerup-btn" id="btn-use-magnet" title="Activate Magnet (Key 1)">
+          <span class="p-icon">🧲</span>
+          <span class="p-name">Magnet</span>
+          <span class="p-count" id="count-magnet">0</span>
+        </button>
+        <button class="powerup-btn" id="btn-use-shield" title="Activate Shield (Key 2)">
+          <span class="p-icon">🛡️</span>
+          <span class="p-name">Shield</span>
+          <span class="p-count" id="count-shield">0</span>
+        </button>
+        <button class="powerup-btn" id="btn-use-freeze" title="Activate Freeze (Key 3)">
+          <span class="p-icon">❄️</span>
+          <span class="p-name">Freeze</span>
+          <span class="p-count" id="count-freeze">0</span>
+        </button>
+        <button class="powerup-btn" id="btn-use-cut" title="Activate Cut (Key 4)">
+          <span class="p-icon">✂️</span>
+          <span class="p-name">Cut</span>
+          <span class="p-count" id="count-cut">0</span>
+        </button>
+      </div>
+
+      <!-- Mobile On-Screen D-Pad Controller -->
+      <div class="mobile-controls" id="mobile-controls">
+        <div class="dpad-grid">
+          <button id="dpad-up" class="dpad-btn dpad-up" aria-label="Up">▲</button>
+          <button id="dpad-left" class="dpad-btn dpad-left" aria-label="Left">◀</button>
+          <div class="dpad-center">
+            <span id="dpad-food-icon" class="dpad-center-icon">🍎</span>
+          </div>
+          <button id="dpad-right" class="dpad-btn dpad-right" aria-label="Right">▶</button>
+          <button id="dpad-down" class="dpad-btn dpad-down" aria-label="Down">▼</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 7: CUSTOMIZE FOOD -->
+    <section id="screen-customize" class="screen">
+      <div class="screen-header">
+        <button id="btn-custom-back" class="icon-btn back-btn" aria-label="Back">←</button>
+        <div>
+          <h2>CUSTOMIZE FOOD</h2>
+          <p class="screen-subtitle">Select which fruit appears inside your game</p>
+        </div>
+        <div style="width: 40px;"></div>
+      </div>
+
+      <div class="food-grid-wrapper">
+        <div class="food-grid" id="food-grid"></div>
+      </div>
+
+      <div class="customize-action-bar">
+        <div class="selected-summary">
+          <span>Active:</span>
+          <span id="summary-food-icon">🍎</span>
+          <strong id="summary-food-name">Apple</strong>
+        </div>
+        <button id="btn-save-food" class="btn btn-primary btn-md">
+          <span>SAVE / APPLY</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 8: SETTINGS -->
+    <section id="screen-settings" class="screen">
+      <div class="screen-header">
+        <button id="btn-settings-back" class="icon-btn back-btn" aria-label="Back">←</button>
+        <h2>SETTINGS</h2>
+        <div style="width: 40px;"></div>
+      </div>
+
+      <div class="settings-content">
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="settings-info">
+              <span class="settings-icon">🎨</span>
+              <div>
+                <h4>Theme</h4>
+                <p>Switch between Dark and Light mode</p>
+              </div>
+            </div>
+            <div class="theme-switch-group">
+              <button id="setting-theme-dark" class="theme-choice-btn active" data-theme-val="dark">
+                <span>🌙 Dark</span>
+              </button>
+              <button id="setting-theme-light" class="theme-choice-btn" data-theme-val="light">
+                <span>☀️ Light</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="settings-info">
+              <span class="settings-icon">🔊</span>
+              <div>
+                <h4>Sound Effects</h4>
+                <p>Audio for all maps, power-ups, and actions</p>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="setting-sound-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="settings-info">
+              <span class="settings-icon">📳</span>
+              <div>
+                <h4>Vibration</h4>
+                <p>Haptic feedback on mobile devices</p>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="setting-vibration-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-card danger-card">
+          <div class="settings-row">
+            <div class="settings-info">
+              <span class="settings-icon">🗑️</span>
+              <div>
+                <h4>Reset Game Data</h4>
+                <p>Clear levels, coins, gems, high scores & settings</p>
+              </div>
+            </div>
+            <button id="btn-reset-data" class="btn btn-danger btn-sm">
+              <span>RESET</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERLAY: SPACE TIME STOP QUICK REACTION EVENT -->
+    <div id="overlay-reaction" class="overlay">
+      <div class="overlay-card reaction-card">
+        <div class="space-portal-glow">
+          <span class="portal-ship">🛸</span>
+        </div>
+        <h2 class="reaction-title">⚡ TIME STOP EVENT!</h2>
+        <p class="reaction-subtitle">QUICK! Press the directional sequence!</p>
+
+        <!-- Directional Target Sequence -->
+        <div class="reaction-sequence-box" id="reaction-sequence-box">
+          <!-- Populated dynamically: [ ◀ ] [ ▲ ] [ ▶ ] [ ▼ ] -->
+        </div>
+
+        <!-- Timer bar -->
+        <div class="reaction-timer-track">
+          <div class="reaction-timer-fill" id="reaction-timer-fill"></div>
+        </div>
+
+        <!-- On-screen directional buttons for mobile/touch -->
+        <div class="reaction-dpad">
+          <button class="r-btn r-up" data-dir="UP">▲</button>
+          <div class="r-row">
+            <button class="r-btn r-left" data-dir="LEFT">◀</button>
+            <button class="r-btn r-down" data-dir="DOWN">▼</button>
+            <button class="r-btn r-right" data-dir="RIGHT">▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY: LEVEL UP CELEBRATION -->
+    <div id="overlay-levelup" class="overlay">
+      <div class="overlay-card levelup-card">
+        <div class="levelup-icon-pulse">🌟</div>
+        <h2 class="levelup-title">LEVEL UP!</h2>
+        <div class="levelup-badge" id="levelup-display">LEVEL 2</div>
+        <p class="levelup-desc">+100 XP completed!</p>
+        <div class="levelup-reward">
+          <span>Reward:</span>
+          <strong>🪙 +10 Coins</strong>
+        </div>
+        <button id="btn-levelup-continue" class="btn btn-primary btn-block btn-lg">
+          <span>AWESOME!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- OVERLAY: PAUSE -->
+    <div id="overlay-pause" class="overlay">
+      <div class="overlay-card pause-card">
+        <div class="overlay-icon-badge pause-icon">⏸</div>
+        <h2 class="overlay-title">GAME PAUSED</h2>
+        <p class="overlay-subtitle">Take a breather, the snake is resting.</p>
+
+        <div class="pause-stats">
+          <div class="pause-stat">
+            <span class="pause-stat-label">Current Score</span>
+            <span class="pause-stat-value" id="pause-score">0</span>
+          </div>
+          <div class="pause-stat">
+            <span class="pause-stat-label">Map</span>
+            <span class="pause-stat-value" id="pause-map">Classic</span>
+          </div>
+        </div>
+
+        <div class="overlay-buttons">
+          <button id="btn-pause-resume" class="btn btn-primary btn-block btn-lg">
+            <span>▶ RESUME</span>
+          </button>
+          <button id="btn-pause-menu" class="btn btn-secondary btn-block">
+            <span>🏠 MENU</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY: GAME OVER (CLASSIC MODE) -->
+    <div id="overlay-gameover" class="overlay">
+      <div class="overlay-card gameover-card">
+        <div id="gameover-new-high-badge" class="high-score-banner">
+          🎉 NEW HIGH SCORE!
+        </div>
+        <div class="overlay-icon-badge gameover-icon">💀</div>
+        <h2 class="overlay-title">GAME OVER</h2>
+        <p class="overlay-subtitle" id="gameover-cause">You hit an obstacle!</p>
+
+        <div class="result-stats-grid">
+          <div class="result-stat-box">
+            <span class="result-stat-label">Score</span>
+            <span class="result-stat-value highlight-score" id="gameover-score">0</span>
+          </div>
+          <div class="result-stat-box">
+            <span class="result-stat-label">High Score</span>
+            <span class="result-stat-value" id="gameover-high-score">0</span>
+          </div>
+        </div>
+
+        <div class="overlay-buttons">
+          <button id="btn-gameover-replay" class="btn btn-primary btn-block btn-lg">
+            <span>🔄 PLAY AGAIN</span>
+          </button>
+          <button id="btn-gameover-menu" class="btn btn-secondary btn-block">
+            <span>🏠 MAIN MENU</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY: RUN COMPLETE (ENDLESS MODE QUIT / FINISH) -->
+    <div id="overlay-endless-quit" class="overlay">
+      <div class="overlay-card endless-quit-card">
+        <div id="endless-new-high-badge" class="high-score-banner">
+          🎉 NEW HIGH SCORE!
+        </div>
+        <div class="overlay-icon-badge endless-icon">🌀</div>
+        <h2 class="overlay-title">RUN COMPLETE</h2>
+        <p class="overlay-subtitle">Great run! Here is your endless expedition summary.</p>
+
+        <div class="result-stats-grid three-col">
+          <div class="result-stat-box">
+            <span class="result-stat-label">Score</span>
+            <span class="result-stat-value highlight-score" id="endless-result-score">0</span>
+          </div>
+          <div class="result-stat-box">
+            <span class="result-stat-label">Length</span>
+            <span class="result-stat-value" id="endless-result-length">0</span>
+          </div>
+          <div class="result-stat-box">
+            <span class="result-stat-label">High Score</span>
+            <span class="result-stat-value" id="endless-result-high">0</span>
+          </div>
+        </div>
+
+        <div class="overlay-buttons">
+          <button id="btn-endless-replay" class="btn btn-primary btn-block btn-lg">
+            <span>🔄 PLAY AGAIN</span>
+          </button>
+          <button id="btn-endless-menu" class="btn btn-secondary btn-block">
+            <span>🏠 MAIN MENU</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: CONFIRM RESET -->
+    <div id="modal-confirm-reset" class="overlay">
+      <div class="overlay-card confirm-card">
+        <div class="overlay-icon-badge danger-icon">⚠️</div>
+        <h3 class="overlay-title">Reset All Data?</h3>
+        <p class="overlay-subtitle">This will delete your levels, XP, coins, gems, high scores, power-ups, and customization.</p>
+        <div class="modal-actions">
+          <button id="btn-confirm-reset-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="btn-confirm-reset-ok" class="btn btn-danger">Yes, Reset All</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOBAL TOAST NOTIFICATION -->
+    <div id="app-toast" class="app-toast"></div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

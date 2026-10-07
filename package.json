@@ -1,0 +1,16 @@
+{
+  "name": "snake-game",
+  "version": "1.0.0",
+  "description": "Modern Snake Game - Arcade Adventure",
+  "main": "script.js",
+  "scripts": {
+    "build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "snake",
+    "game",
+    "arcade"
+  ],
+  "author": "",
+  "license": "MIT"
+}
